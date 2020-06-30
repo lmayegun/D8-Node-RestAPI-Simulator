@@ -1,32 +1,67 @@
 const Article = require('../models/article');
+const HtttpError = require('../models/http-error');
 
-const getArticlesByQuery = (req, res, next) => {
-  const type = req.query.category;
+const getArticlesByQuery = async (req, res, next) => {
+  const { category } = req.query;
 
-  res.json({message:`pulling article by ${type}`});
+  let articles;
+  try{
+    articles = await Article.find({ category: category });
+  }catch( err ){
+    const error = HttpError(err, 500);
+    return next(error);
+  }
+
+  if( !articles || articles.length === 0 ){
+    return next(
+      new HttpError('Could not fin articles', 404)
+    );
+  };
+
+  res.json({ articles: articles.map(article => article.toObject({ getters: true })) });
 };
 
-const getArticleById = (req, res, next) => {
+const getArticleById = async (req, res, next) => {
   const id = req.params.id;
 
-  res.json({message: `get article by ${id}`});
+  let article;
+  try {
+    article = await Article.findById(id);
+  } catch (err) {
+    const error = new HttpError(err, 500);
+    return next(error);
+  }
+
+  if (!article) {
+    const error = new HttpError('Could not find a article for the provided id.', 404);
+    return next(error);
+  }
+
+  res.json({ article: article.toObject({ getters: true }) });
 };
 
 const createArticle = async (req, res, next) => {
-  const article = req.body;
+  const {title, category, author, publishedOn, image, summary, body} = req.body;
+
+  const createdArticle = new Article({
+                              title,
+                              category,
+                              author,
+                              publishedOn,
+                              image:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Empire_State_Building_%28aerial_view%29.jpg/400px-Empire_State_Building_%28aerial_view%29.jpg',
+                              summary,
+                              body
+                            });
 
   let result;
-
   try{
-    const createdArticle = new Article({
-                                      ...article
-                                      });
     result = await createdArticle.save();
-  }catch(e){
-    console.log(e)
+  }catch(err){
+    const error = new HtttpError(err, 500);
+    return next(error);
   }
 
-  res.json(result);
+  res.status(201).json(result);
 };
 
 const updateArticle = (req, res, next) => {
