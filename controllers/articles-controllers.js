@@ -1,3 +1,4 @@
+
 const getArticlesByQuery = (req, res, next) => {
   const type = req.query.category;
 
