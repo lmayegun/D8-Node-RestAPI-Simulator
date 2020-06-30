@@ -1,3 +1,4 @@
+const Article = require('../models/article');
 
 const getArticlesByQuery = (req, res, next) => {
   const type = req.query.category;
@@ -11,10 +12,21 @@ const getArticleById = (req, res, next) => {
   res.json({message: `get article by ${id}`});
 };
 
-const createArticle = (req, res, next) => {
+const createArticle = async (req, res, next) => {
   const article = req.body;
 
-  res.json({res:article});
+  let result;
+
+  try{
+    const createdArticle = new Article({
+                                      ...article
+                                      });
+    result = await createdArticle.save();
+  }catch(e){
+    console.log(e)
+  }
+
+  res.json(result);
 };
 
 const updateArticle = (req, res, next) => {
