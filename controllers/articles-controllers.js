@@ -16,6 +16,15 @@ const createArticle = (req, res, next) => {
   res.json({res:article});
 };
 
+const updateArticle = (req, res, next) => {
+  const id = req.params.id;
+  const body = req.body;
+
+  res.json({id: `update article by ${id}`,
+            body: body,
+          });
+};
+
 const deleteArticle = (req, res, next) => {
   const id = req.params.id;
 
@@ -25,4 +34,5 @@ const deleteArticle = (req, res, next) => {
 exports.getArticlesByQuery = getArticlesByQuery;
 exports.getArticleById = getArticleById;
 exports.createArticle = createArticle;
+exports.updateArticle = updateArticle;
 exports.deleteArticle = deleteArticle;
