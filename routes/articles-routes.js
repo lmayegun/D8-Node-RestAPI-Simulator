@@ -9,8 +9,6 @@ router.get('/:id', articlesControllers.getArticleById);
 
 router.post('/', articlesControllers.createArticle);
 
-router.delete('/:id', (req, res, next)=>{
-  res.json({id:`delete post ${req.body.id}`});
-});
+router.delete('/:id', articlesControllers.deleteArticle);
 
 module.exports = router;
