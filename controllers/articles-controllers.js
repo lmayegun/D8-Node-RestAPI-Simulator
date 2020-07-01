@@ -18,7 +18,7 @@ const getArticlesByQuery = async (req, res, next) => {
     );
   };
 
-  res.json({ articles: articles.map(article => article.toObject({ getters: true })) });
+  res.json( articles.map(article => article.toObject({ getters: true })) );
 };
 
 const getArticleById = async (req, res, next) => {
@@ -48,7 +48,7 @@ const createArticle = async (req, res, next) => {
                               category,
                               author,
                               publishedOn,
-                              image:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Empire_State_Building_%28aerial_view%29.jpg/400px-Empire_State_Building_%28aerial_view%29.jpg',
+                              image,
                               summary,
                               body
                             });
@@ -75,6 +75,8 @@ const updateArticle = (req, res, next) => {
 
 const deleteArticle = (req, res, next) => {
   const id = req.params.id;
+
+  let article
 
   res.json({res: `delete article by ${id}`});
 };
