@@ -76,13 +76,49 @@ const createArticle = async (req, res, next) => {
   res.status(201).json(result);
 };
 
-const updateArticle = (req, res, next) => {
-  const id = req.params.id;
-  const body = req.body;
+const updateArticle = async (req, res, next) => {
+  const errors = validationResult(req);
 
-  res.json({id: `update article by ${id}`,
-            body: body,
-          });
+  if(!errors.isEmpty()){
+    return next(
+                  res
+                  .status(422)
+                  .json( {error:errors.array()} )
+                );
+  }
+
+  const id = req.params.id;
+  const {title, category, date, summary, body, image, author} = req.body;
+
+  let article;
+  try{
+    article = await Article.findById(id);
+  }catch(err){
+    const error = new HttpError(err, 500);
+    return next(res.status(200).json({message:error.message}) );
+  }
+
+  if(!article){
+    const error = new HttpError('Could not find article', 404);
+    return next(error);
+  }
+
+  article.title = title;
+  article.image = image;
+  article.category = category;
+  article.date = date;
+  article.summary = summary;
+  article.body = body;
+  article.author = author;
+
+  try{
+    await article.save();
+  }catch(err){
+    const error = new HttpError(err, 500);
+    return next(res.status(200).json({message:error.message}) );
+  }
+
+  res.status(200).json({article:article});
 };
 
 const deleteArticle = async (req, res, next) => {
