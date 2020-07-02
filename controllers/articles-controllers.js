@@ -1,5 +1,7 @@
+const { validationResult } = require('express-validator');
+
 const Article = require('../models/article');
-const HtttpError = require('../models/http-error');
+const HttpError = require('../models/http-error');
 
 const getArticlesByQuery = async (req, res, next) => {
   const { category } = req.query;
@@ -14,7 +16,7 @@ const getArticlesByQuery = async (req, res, next) => {
 
   if( !articles || articles.length === 0 ){
     return next(
-      new HttpError('Could not fin articles', 404)
+      new HttpError('Could not find articles', 404)
     );
   };
 
@@ -41,6 +43,16 @@ const getArticleById = async (req, res, next) => {
 };
 
 const createArticle = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()){
+    return next(
+                  res
+                  .status(422)
+                  .json( {error:errors.array()} )
+                );
+  }
+
   const {title, category, author, publishedOn, image, summary, body} = req.body;
 
   const createdArticle = new Article({
@@ -48,7 +60,7 @@ const createArticle = async (req, res, next) => {
                               category,
                               author,
                               publishedOn,
-                              image: req.file.path,
+                              image: 'req.file.path',
                               summary,
                               body
                             });
@@ -73,12 +85,20 @@ const updateArticle = (req, res, next) => {
           });
 };
 
-const deleteArticle = (req, res, next) => {
+const deleteArticle = async (req, res, next) => {
   const id = req.params.id;
 
-  let article
+  let article;
 
-  res.json({res: `delete article by ${id}`});
+  try{
+    article = await Article.findById(id);
+    await article.remove();
+  }catch(err){
+    const error = new HttpError(err, 500);
+    return next(res.status(200).json({message:error.message}) );
+  }
+
+  res.status(200).json({res: article});
 };
 
 exports.getArticlesByQuery = getArticlesByQuery;

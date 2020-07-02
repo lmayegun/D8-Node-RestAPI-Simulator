@@ -1,4 +1,6 @@
 const express = require('express');
+const { check } = require('express-validator');
+
 const router = express.Router();
 const fileUpload = require('../middleware/file-upload');
 
@@ -10,9 +12,29 @@ router.get('/:id', articlesControllers.getArticleById);
 
 router.post('/',
             fileUpload.single('image'),
-            articlesControllers.createArticle);
+            [
+              check('title')
+                .not()
+                .isEmpty(),
+              check('category')
+                .not()
+                .isEmpty(),
+            ],
+            articlesControllers.createArticle
+          );
 
-router.patch('/:id', articlesControllers.updateArticle);
+router.patch('/:id',
+             fileUpload.single('image'),
+             [
+              check('title')
+                .not()
+                .isEmpty(),
+              check('category')
+                .not()
+                .isEmpty(),
+             ],
+             articlesControllers.updateArticle
+           );
 
 router.delete('/:id', articlesControllers.deleteArticle);
 
