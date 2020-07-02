@@ -48,7 +48,7 @@ const createArticle = async (req, res, next) => {
                               category,
                               author,
                               publishedOn,
-                              image,
+                              image: req.file.path,
                               summary,
                               body
                             });
