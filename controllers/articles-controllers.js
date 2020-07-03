@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const fs = require('fs');
 
 const Article = require('../models/article');
 const HttpError = require('../models/http-error');
@@ -60,7 +61,7 @@ const createArticle = async (req, res, next) => {
                               category,
                               author,
                               publishedOn,
-                              image: 'req.file.path',
+                              image: req.file.path,
                               summary,
                               body
                             });
@@ -104,7 +105,7 @@ const updateArticle = async (req, res, next) => {
   }
 
   article.title = title;
-  article.image = image;
+  article.image = req.file.path;
   article.category = category;
   article.date = date;
   article.summary = summary;
@@ -128,11 +129,26 @@ const deleteArticle = async (req, res, next) => {
 
   try{
     article = await Article.findById(id);
+  }catch(err){
+    const error = new HttpError(err, 500);
+    return next(res.status(error.code).json({message:error.message}) );
+  }
+
+  if(!article){
+    const error = new HttpError('Could not find an article', 404);
+    return next(error);
+  }
+
+  try{
     await article.remove();
   }catch(err){
     const error = new HttpError(err, 500);
-    return next(res.status(200).json({message:error.message}) );
+    return next(res.status(error.code).json({message:error.message}) )
   }
+
+  fs.unlink(article.image, (err)=> {
+    console.log(err);
+  });
 
   res.status(200).json({res: article});
 };
