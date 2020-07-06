@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const fs = require('fs');
 const path = require('path');
 
-const configs = require("./configs");
 const HttpError = require('./models/http-error');
 
 const app = express();
