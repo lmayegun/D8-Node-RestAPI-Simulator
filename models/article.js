@@ -7,9 +7,17 @@ const articleSchema = new Schema({
   category: { type: String, required: true },
   author: { type: String, required: false},
   publishedOn: { type: String, required: true},
-  image: { type: String, required: true },
+  image: { type: String, required: false },
   summary: { type: String, required: false },
   body: { type: String, required: true },
+  content: { type: String, required: false },
+  description: { type: String, required: false },
+  tags: { type: Array, required: false },
+});
+
+articleSchema.index({
+  summary: 'text',
+  body: 'text',
 });
 
 module.exports = mongoose.model('Article', articleSchema);

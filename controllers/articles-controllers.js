@@ -3,13 +3,14 @@ const fs = require('fs');
 
 const Article = require('../models/article');
 const HttpError = require('../models/http-error');
+const {returnQueries } = require('../utils/helpers');
 
 const getArticlesByQuery = async (req, res, next) => {
-  const { category } = req.query;
+  const queries = returnQueries(req.query);
 
   let articles;
   try{
-    articles = await Article.find({ category: category });
+    articles = await Article.find(queries);
   }catch( err ){
     const error = HttpError(err, 500);
     return next(error);
@@ -54,7 +55,7 @@ const createArticle = async (req, res, next) => {
                 );
   }
 
-  const {title, category, author, publishedOn, image, summary, body} = req.body;
+  const {title, category, author, publishedOn, image, summary, body, tags, content, description} = req.body;
 
   const createdArticle = new Article({
                               title,
@@ -63,7 +64,10 @@ const createArticle = async (req, res, next) => {
                               publishedOn,
                               image: req.file.path,
                               summary,
-                              body
+                              body,
+                              content,
+                              description,
+                              tags
                             });
 
   let result;
@@ -89,7 +93,7 @@ const updateArticle = async (req, res, next) => {
   }
 
   const id = req.params.id;
-  const {title, category, date, summary, body, image, author} = req.body;
+  const {title, category, author, publishedOn, image, summary, body, tags, content, description} = req.body;
 
   let article;
   try{
