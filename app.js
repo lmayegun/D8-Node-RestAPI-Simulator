@@ -12,6 +12,17 @@ const port = 3000;
 const articles = require('./routes/articles-routes');
 
 app.use(bodyParser.json());
+
+app.use((req, res, next)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+      'Access-Control-Allow-Headers', 
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    );
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+  next();
+});
+
 app.use('/api/articles', articles);
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
@@ -35,7 +46,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect()
+  .connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-7s3y4.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
   .then(() => {
     app.listen( process.env.PORT || port);
   })
