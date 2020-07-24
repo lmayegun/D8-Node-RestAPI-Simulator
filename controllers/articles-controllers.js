@@ -49,26 +49,43 @@ const createArticle = async (req, res, next) => {
 
   if(!errors.isEmpty()){
     return next(
-                  res
-                  .status(422)
-                  .json( {error:errors.array()} )
-                );
+            res
+            .status(422)
+            .json( {error:errors.array()} )
+          );
   }
 
-  const {title, category, author, publishedOn, image, summary, body, tags, content, description} = req.body;
+  const {title,
+         category, 
+         author, 
+         publishedOn, 
+         summary, 
+         body, 
+         tags, 
+         content,
+         urlToImage,
+         sideThumbImg,
+         centerThumbImg, 
+         description} = req.body;
+  
+  const image = req.file ? req.file.path : '';
 
-  const createdArticle = new Article({
-                              title,
-                              category,
-                              author,
-                              publishedOn,
-                              image: req.file.path,
-                              summary,
-                              body,
-                              content,
-                              description,
-                              tags
-                            });
+  const createdArticle = 
+    new Article({
+        title,
+        category,
+        author,
+        publishedOn,
+        image,
+        urlToImage,
+        sideThumbImg,
+        centerThumbImg, 
+        summary,
+        body,
+        content,
+        description,
+        tags
+      });
 
   let result;
   try{
@@ -154,7 +171,7 @@ const deleteArticle = async (req, res, next) => {
     console.log(err);
   });
 
-  res.status(200).json({res: article});
+  res.status(200).json({res: article.toObject({getters: true})});
 };
 
 exports.getArticlesByQuery = getArticlesByQuery;
