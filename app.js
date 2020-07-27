@@ -10,7 +10,7 @@ const app = express();
 const port = 3000;
 
 const articles = require('./routes/articles-routes');
-const msg = require('./routes/msg-routes');
+const posts = require('./routes/posts-routes');
 
 app.use(bodyParser.json());
 
@@ -25,7 +25,7 @@ app.use((req, res, next)=>{
 });
 
 app.use('/api/articles', articles);
-app.use('/api/msg', msg);
+app.use('/api/posts', posts);
 
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
