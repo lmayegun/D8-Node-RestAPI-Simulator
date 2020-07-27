@@ -5,15 +5,11 @@ const postControllers = require('../controllers/post-controllers');
 
 router.get('/', postControllers.getPostsByQuery );
 
-router.get('/:id', (req, res, next)=>{
-    res.json({"color":`${req.params.id}`})
-});
+router.get('/:id', postControllers.getPostById );
 
 router.post('/', postControllers.createPost );
 
-router.patch('/:id', (req, res, next)=>{
-    res.json({"color":"of your world"})
-});
+router.patch('/:id', postControllers.updatePost );
 
 router.delete('/:id', (req, res, next)=>{
     res.json({"color":"of your world"})
