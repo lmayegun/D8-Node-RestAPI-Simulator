@@ -11,8 +11,6 @@ router.post('/', postControllers.createPost );
 
 router.patch('/:id', postControllers.updatePost );
 
-router.delete('/:id', (req, res, next)=>{
-    res.json({"color":"of your world"})
-});
+router.delete('/:id', postControllers.deletePost );
 
 module.exports = router;
