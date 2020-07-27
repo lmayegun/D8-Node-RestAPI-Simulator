@@ -55,18 +55,18 @@ const createPost = async (req, res, next) => {
           );
   }
 
-  const {title,
-         category, 
-         author, 
-         publishedOn, 
-         summary, 
-         body, 
-         tags, 
-         content,
-         urlToImage,
-         sideThumbImg,
-         centerThumbImg, 
-         description} = req.body;
+  const {
+        title,
+        category,
+        author,
+        publishedOn,
+        thumbImage,
+        exclusive,
+        breaking,
+        video,
+        gated,
+        body
+        } = req.body;
   
   const image = req.file ? req.file.path : '';
 
@@ -76,15 +76,12 @@ const createPost = async (req, res, next) => {
         category,
         author,
         publishedOn,
-        image,
-        urlToImage,
-        sideThumbImg,
-        centerThumbImg, 
-        summary,
-        body,
-        content,
-        description,
-        tags
+        thumbImage,
+        exclusive,
+        breaking,
+        video,
+        gated,
+        body
       });
 
   let result;
@@ -167,9 +164,9 @@ const deletePost = async (req, res, next) => {
     return next(res.status(error.code).json({message:error.message}) )
   }
 
-  fs.unlink(post.image, (err)=> {
-    console.log(err);
-  });
+//   fs.unlink(post.image, (err)=> {
+//     console.log(err);
+//   });
 
   res.status(200).json({res: post.toObject({getters: true})});
 };
