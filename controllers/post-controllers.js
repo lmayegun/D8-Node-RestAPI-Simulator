@@ -107,7 +107,18 @@ const updatePost = async (req, res, next) => {
   }
 
   const id = req.params.id;
-  const {title, category, author, publishedOn, image, summary, body, tags, content, description} = req.body;
+  const {        
+        title,
+        category,
+        author,
+        publishedOn,
+        thumbImage,
+        exclusive,
+        breaking,
+        video,
+        gated,
+        body
+        } = req.body;
 
   let post;
   try{
@@ -123,12 +134,15 @@ const updatePost = async (req, res, next) => {
   }
 
   post.title = title;
-  post.image = req.file.path;
   post.category = category;
-  post.date = date;
-  post.summary = summary;
-  post.body = body;
   post.author = author;
+  post.publishedOn = publishedOn;
+  post.thumbImage = thumbImage;
+  post.exclusive = exclusive;
+  post.breaking = breaking;
+  post.video = video;
+  post.gated = gated;
+  post.body = body;
 
   try{
     await post.save();
