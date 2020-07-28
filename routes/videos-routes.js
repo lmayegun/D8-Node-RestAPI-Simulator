@@ -2,11 +2,11 @@ const express = require('express');
 const { check } = require('express-validator')
 
 const router = express.Router();
-const postControllers = require('../controllers/post-controllers');
+const videoControllers = require('../controllers/video-controllers');
 
-router.get('/', postControllers.getPostsByQuery );
+router.get('/', videoControllers.getVideosByQuery );
 
-router.get('/:id', postControllers.getPostById );
+router.get('/:id', videoControllers.getVideoById );
 
 router.post(
             '/', 
@@ -18,7 +18,7 @@ router.post(
             .not()
             .isEmpty(),
             ],
-            postControllers.createPost 
+            videoControllers.createVideo 
         );
 
 router.patch(
@@ -31,9 +31,9 @@ router.patch(
             .not()
             .isEmpty(),
             ],
-            postControllers.updatePost 
+            videoControllers.updateVideo 
         );
 
-router.delete('/:id', postControllers.deletePost );
+router.delete('/:id', videoControllers.deleteVideo );
 
 module.exports = router;

@@ -11,6 +11,7 @@ const port = 3000;
 
 const articles = require('./routes/articles-routes');
 const posts = require('./routes/posts-routes');
+const videos = require('./routes/videos-routes');
 
 app.use(bodyParser.json());
 
@@ -26,6 +27,7 @@ app.use((req, res, next)=>{
 
 app.use('/api/articles', articles);
 app.use('/api/posts', posts);
+app.use('/api/videos', videos);
 
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
@@ -49,7 +51,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(`mongodb+srv://lukmon:NWW5BjzlUJrcoZVQ@cluster0-7s3y4.mongodb.net/recruiter?retryWrites=true&w=majority`)
+  .connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-7s3y4.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
   .then(() => {
     app.listen( process.env.PORT || port);
   })
@@ -57,5 +59,3 @@ mongoose
     console.log(err);
   });
   
-  //.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-7s3y4.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
-  // .connect(`mongodb+srv://lukmon:NWW5BjzlUJrcoZVQ@cluster0-7s3y4.mongodb.net/recruiter?retryWrites=true&w=majority`)
