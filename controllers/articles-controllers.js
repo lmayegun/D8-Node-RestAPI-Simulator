@@ -7,10 +7,16 @@ const {returnQueries } = require('../utils/helpers');
 
 const getArticlesByQuery = async (req, res, next) => {
   const queries = returnQueries(req.query);
+  const sortBy = req.query.sortBy ? req.query.sortBy : 'body';
+  const limit = req.query.limit ? parseInt(req.query.limit) : 2; 
+  const skip = req.query.skip ? parseInt(req.query.skip) : 0; 
 
   let articles;
   try{
-    articles = await Article.find(queries);
+    articles = await Article.find(queries)
+                            .sort(sortBy)
+                            .limit(limit)
+                            .skip(skip);
   }catch( err ){
     const error = HttpError(err, 500);
     return next(error);
