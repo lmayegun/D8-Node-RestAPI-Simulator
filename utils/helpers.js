@@ -1,5 +1,5 @@
 const returnQueries = ( queries )=>{
-  const { category, search } = queries;
+  const { category, search, tag } = queries;
 
   let query = {};
 
@@ -9,6 +9,10 @@ const returnQueries = ( queries )=>{
 
   if( search !== undefined ){
     query.$text = { $search: search };
+  }
+
+  if( tag !== undefined ){
+    query.tags = tag
   }
 
   return query;
